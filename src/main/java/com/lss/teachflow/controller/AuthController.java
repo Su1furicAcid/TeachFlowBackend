@@ -4,7 +4,6 @@ import com.lss.teachflow.dto.JwtResponse;
 import com.lss.teachflow.dto.LoginRequest;
 import com.lss.teachflow.dto.SignupRequest;
 import com.lss.teachflow.security.JwtUtils;
-import com.lss.teachflow.security.UserDetailsServiceImpl;
 import com.lss.teachflow.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,6 @@ public class AuthController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        UserDetailsServiceImpl userDetailsService = (UserDetailsServiceImpl)  authentication.getPrincipal();
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
