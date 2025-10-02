@@ -34,7 +34,10 @@ public class AuthController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        return ResponseEntity.ok(new JwtResponse(jwt));
+        return ResponseEntity.ok(new JwtResponse(
+                jwt,
+                userService.getUserIdByUsername(loginRequest.getUsername())
+        ));
     }
 
     @PostMapping("/signup")
