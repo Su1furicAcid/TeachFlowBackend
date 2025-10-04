@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -33,9 +35,12 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        Map<String, String> tokens = jwtUtils.generateTokens(authentication);
+        String accessToken = tokens.get("accessToken");
+        String refreshToken = tokens.get("refreshToken");
         return ResponseEntity.ok(new JwtResponse(
-                jwt,
+                accessToken,
+                refreshToken,
                 userService.getUserIdByUsername(loginRequest.getUsername())
         ));
     }
@@ -54,5 +59,25 @@ public class AuthController {
         }
         userService.registerUser(signUpRequest);
         return ResponseEntity.ok("User registered successfully!");
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestParam String refreshToken) throws Exception {
+        if (jwtUtils.validateJwtToken(refreshToken)) {
+            String username = jwtUtils.getUserNameFromJwtToken(refreshToken);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, null);
+            Map<String, String> tokens = jwtUtils.generateTokens(authentication);
+            String newAccessToken = tokens.get("accessToken");
+            String newRefreshToken = tokens.get("refreshToken");
+            return ResponseEntity.ok(new JwtResponse(
+                    newAccessToken,
+                    newRefreshToken,
+                    userService.getUserIdByUsername(username)
+            ));
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: Invalid refresh token!");
+        }
     }
 }

@@ -2,17 +2,15 @@ package com.lss.teachflow.dto;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class JwtResponse {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
     private int id;
-    private String username;
-    private String email;
 
-    public JwtResponse(String accessToken, int id) {
-        this.token = accessToken;
+    public JwtResponse(String accessToken, String refreshToken, int id) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.id = id;
     }
 }

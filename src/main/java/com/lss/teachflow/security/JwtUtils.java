@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtils {
@@ -21,21 +23,33 @@ public class JwtUtils {
     private final String jwtSecret;
 
     @Value("${teachflow.app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    private long accessExpirationMs;
+
+    @Value("7*24*60*60*1000")
+    private long refreshExpirationMs;
 
     public JwtUtils(@Qualifier("jwtSecret") String jwtSecret) {
         this.jwtSecret = jwtSecret;
     }
 
-    public String generateJwtToken(Authentication authentication) {
+    public String generateToken(Authentication authentication, String mode) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
-
+        long expiration = mode.equals("access") ? accessExpirationMs : refreshExpirationMs;
         return Jwts.builder()
                 .subject(userPrincipal.getUsername())
                 .issuedAt(new Date())
-                .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .expiration(new Date((new Date()).getTime() + expiration))
                 .signWith(key())
                 .compact();
+    }
+
+    public Map<String, String> generateTokens(Authentication authentication) {
+        String accessToken = generateToken(authentication, "access");
+        String refreshToken = generateToken(authentication, "refresh");
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+        return tokens;
     }
 
     private SecretKey key() {
