@@ -25,7 +25,7 @@ public class JwtUtils {
     @Value("${teachflow.app.jwtExpirationMs}")
     private long accessExpirationMs;
 
-    @Value("7*24*60*60*1000")
+    @Value("#{7*24*60*60*1000}")
     private long refreshExpirationMs;
 
     public JwtUtils(@Qualifier("jwtSecret") String jwtSecret) {
@@ -56,7 +56,7 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    public String getUserNameFromJwtToken(String token) {
+    public String getUsernameFromJwtToken(String token) {
         return Jwts.parser()
                 .verifyWith(key())
                 .build()

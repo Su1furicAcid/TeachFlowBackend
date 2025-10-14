@@ -76,4 +76,23 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         return user.getId();
     }
+
+    @Override
+    public String getUserEmailByUserId(int id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getEmail();
+    }
+
+    @Override
+    public void updateUserInfo(String currentUsername, String newUsername, String newEmail) {
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (newUsername != null && !newUsername.isEmpty()) {
+            user.setUsername(newUsername);
+        }
+        if (newEmail != null && !newEmail.isEmpty()) {
+            user.setEmail(newEmail);
+        }
+        userRepository.save(user);
+    }
 }

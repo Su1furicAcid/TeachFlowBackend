@@ -7,4 +7,6 @@ public interface UserService {
     boolean existsByEmail(String email);
     void registerUser(SignupRequest signUpRequest);
     int getUserIdByUsername(String username);
+    String getUserEmailByUserId(int id);
+    void updateUserInfo(String currentUsername, String newUsername, String newEmail);
 }

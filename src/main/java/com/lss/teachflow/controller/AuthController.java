@@ -2,6 +2,7 @@ package com.lss.teachflow.controller;
 
 import com.lss.teachflow.dto.JwtResponse;
 import com.lss.teachflow.dto.LoginRequest;
+import com.lss.teachflow.dto.RefreshRequest;
 import com.lss.teachflow.dto.SignupRequest;
 import com.lss.teachflow.security.JwtUtils;
 import com.lss.teachflow.service.UserService;
@@ -12,6 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -28,6 +31,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
@@ -62,10 +68,12 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestParam String refreshToken) throws Exception {
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshRequest refreshRequest) throws Exception {
+        String refreshToken = refreshRequest.getRefreshToken();
         if (jwtUtils.validateJwtToken(refreshToken)) {
-            String username = jwtUtils.getUserNameFromJwtToken(refreshToken);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, null);
+            String username = jwtUtils.getUsernameFromJwtToken(refreshToken);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             Map<String, String> tokens = jwtUtils.generateTokens(authentication);
             String newAccessToken = tokens.get("accessToken");
             String newRefreshToken = tokens.get("refreshToken");
