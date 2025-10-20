@@ -1,0 +1,19 @@
+POST http://localhost:8080/api/auth/signin
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "password123"
+}
+
+<> 2025-10-14T094450.200.json
+<> 2025-10-14T091743.200.json
+<> 2025-10-14T091735.200.json
+<> 2025-10-14T091708.200.json
+<> 2025-10-14T090114.200.json
+<> 2025-10-02T212825.200.json
+<> 2025-09-27T133908.200.json
+<> 2025-09-27T133850.200.json
+<> 2025-09-27T111306.200.txt
+<> 2025-09-27T111253.400.txt
+<> 2025-09-23T103852.200.txt
