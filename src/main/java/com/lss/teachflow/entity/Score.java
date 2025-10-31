@@ -21,11 +21,11 @@ public class Score {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
-    private Student student;
+    private Student studentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exam_id", nullable = false)
-    private Exam exam;
+    private Exam examId;
 
     @Column(precision = 5, scale = 2)
     private BigDecimal scoreValue;

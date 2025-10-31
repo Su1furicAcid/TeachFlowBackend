@@ -1,5 +1,5 @@
 GET http://localhost:8080/api/user/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTc2MDQwNjI5MCwiZXhwIjoxNzYwNDA5ODkwfQ.2O7-7u0L_fV5ff5sKPwkmmgEDq9XdV3hCI7W5e8FJdQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMiIsImlhdCI6MTc2MTkyMzE3MSwiZXhwIjoxNzYxOTI2NzcxfQ.EZIdKUJuzVLOiBfxw03ZWIUegQJ1dwGni6fr8rosErY
 
 <> 2025-10-14T094850.200.json
 <> 2025-10-14T094622.200.json

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 
 @Service
-@RequiredArgsConstructor // 使用 Lombok 自动生成构造函数并注入依赖
+@RequiredArgsConstructor
 public class ExamServiceImpl implements ExamService {
 
     private final ExamRepository examRepository;
@@ -21,6 +21,7 @@ public class ExamServiceImpl implements ExamService {
         Exam exam = new Exam();
         exam.setExamName(examUploadRequest.getExamName());
         exam.setExamDate(LocalDate.parse(examUploadRequest.getExamDate()));
+        exam.setExamSubject(examUploadRequest.getExamSubject());
         Exam savedExam = examRepository.save(exam);
         return savedExam.getExamId();
     }

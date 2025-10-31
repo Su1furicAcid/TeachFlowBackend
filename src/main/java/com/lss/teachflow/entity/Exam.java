@@ -21,5 +21,8 @@ public class Exam {
     @Column(nullable = false, unique = true)
     private String examName;
 
+    @Column(nullable = false)
+    private String examSubject;
+
     private LocalDate examDate;
 }

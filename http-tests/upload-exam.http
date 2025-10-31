@@ -1,0 +1,9 @@
+POST http://localhost:8080/api/exams
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMiIsImlhdCI6MTc2MTkyMzE3MSwiZXhwIjoxNzYxOTI2NzcxfQ.EZIdKUJuzVLOiBfxw03ZWIUegQJ1dwGni6fr8rosErY
+
+{
+  "examName": "期中考试",
+  "examSubject": "数学",
+  "examDate": "2025-10-31"
+}

@@ -38,8 +38,8 @@ public class ScoreServiceImpl implements ScoreService {
         Map<Long, Student> studentMap = studentRepository.findAllById(studentIds).stream()
                 .collect(Collectors.toMap(Student::getStudentId, Function.identity()));
 
-        Map<Long, Score> existingScoresMap = scoreRepository.findByExamId(examId).stream()
-                .collect(Collectors.toMap(score -> score.getStudent().getStudentId(), Function.identity()));
+        Map<Long, Score> existingScoresMap = scoreRepository.findByExamId_ExamId(examId).stream()
+                .collect(Collectors.toMap(score -> score.getStudentId().getStudentId(), Function.identity()));
         List<Score> scoresToSave = new ArrayList<>();
         for (ScoreUploadRequest req : scoreRequests) {
             Student student = studentMap.get(req.getStudentId());
@@ -53,13 +53,23 @@ public class ScoreServiceImpl implements ScoreService {
                 scoresToSave.add(score);
             } else {
                 Score newScore = Score.builder()
-                        .exam(exam)
-                        .student(student)
+                        .examId(exam)
+                        .studentId(student)
                         .scoreValue(req.getScoreValue())
                         .build();
                 scoresToSave.add(newScore);
             }
         }
         scoreRepository.saveAll(scoresToSave);
+    }
+
+    @Override
+    public List<Score> getScoresByExamId(Long examId) {
+        return scoreRepository.findByExamId_ExamId(examId);
+    }
+
+    @Override
+    public List<Score> getScoresByStudentId(Long studentId) {
+        return scoreRepository.findByStudentId_StudentId(studentId);
     }
 }

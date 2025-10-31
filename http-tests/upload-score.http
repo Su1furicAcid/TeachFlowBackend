@@ -1,0 +1,15 @@
+POST http://localhost:8080/api/scores/score/exam/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMiIsImlhdCI6MTc2MTkyMzE3MSwiZXhwIjoxNzYxOTI2NzcxfQ.EZIdKUJuzVLOiBfxw03ZWIUegQJ1dwGni6fr8rosErY
+
+[
+  {
+    "studentId": 101,
+    "scoreValue": 88.5
+  },
+  {
+    "studentId": 102,
+    "scoreValue": 92.0
+  }
+]
+
