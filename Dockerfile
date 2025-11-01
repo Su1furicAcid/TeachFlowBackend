@@ -2,9 +2,9 @@
 FROM gradle:jdk17-focal AS build
 WORKDIR /home/gradle/src
 # Copy build files and download dependencies first to leverage caching
-COPY build.gradle settings.gradle ./
+COPY build.gradle settings.gradle gradlew gradlew.bat ./
 COPY gradle ./gradle
-RUN gradle build --no-daemon -x test --build-cache || gradle build --no-daemon -x test
+RUN gradle dependencies --no-daemon
 COPY src ./src
 # Build the application, skipping tests as they should be run in a separate CI step
 RUN gradle build --no-daemon -x test
