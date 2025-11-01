@@ -67,14 +67,4 @@ jobs:
             echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
             
             echo "--- Checking network connectivity to Docker Hub ---"
-            curl -v https://registry-1.docker.io/v2/
-            
-            echo "--- Attempting to pull images with retries ---"
-            for i in 1 2 3; do
-              docker compose pull && break
-              echo "Pull failed, attempt $i of 3. Retrying in 15 seconds..."
-              sleep 15
-            done
-
-            echo "--- Starting services with Docker Compose ---"
             docker compose up -d --remove-orphans
