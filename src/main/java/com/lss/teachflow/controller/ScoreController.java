@@ -1,10 +1,10 @@
 package com.lss.teachflow.controller;
 
+import com.lss.teachflow.common.ResponseBody;
 import com.lss.teachflow.dto.ScoreUploadRequest;
 import com.lss.teachflow.entity.Score;
 import com.lss.teachflow.service.ScoreService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,22 +17,22 @@ public class ScoreController {
     private final ScoreService scoreService;
 
     @PostMapping("/score/exam/{examId}")
-    public ResponseEntity<?> uploadScoresForExam(
+    public ResponseBody<?> uploadScoresForExam(
             @PathVariable Long examId,
             @RequestBody List<ScoreUploadRequest> scoreRequests) {
         scoreService.batchUpdateScores(examId, scoreRequests);
-        return ResponseEntity.ok("Scores updated successfully.");
+        return ResponseBody.success(null, "Scores updated successfully.");
     }
 
     @GetMapping("/score/exam/{examId}")
-    public ResponseEntity<List<Score>> getScoresByExam(@PathVariable Long examId) {
+    public ResponseBody<List<Score>> getScoresByExam(@PathVariable Long examId) {
         List<Score> scores = scoreService.getScoresByExamId(examId);
-        return ResponseEntity.ok(scores);
+        return ResponseBody.success(scores);
     }
 
     @GetMapping("/score/student/{studentId}")
-    public ResponseEntity<List<Score>> getScoresByStudent(@PathVariable Long studentId) {
+    public ResponseBody<List<Score>> getScoresByStudent(@PathVariable Long studentId) {
         List<Score> scores = scoreService.getScoresByStudentId(studentId);
-        return ResponseEntity.ok(scores);
+        return ResponseBody.success(scores);
     }
 }

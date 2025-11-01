@@ -1,10 +1,9 @@
 package com.lss.teachflow.controller;
 
+import com.lss.teachflow.common.ResponseBody;
 import com.lss.teachflow.dto.ExamUploadRequest;
 import com.lss.teachflow.service.ExamService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,8 +14,8 @@ public class ExamController {
     private final ExamService examService;
 
     @PostMapping
-    public ResponseEntity<Long> uploadExam(@RequestBody ExamUploadRequest examUploadRequest) {
+    public ResponseBody<Long> uploadExam(@RequestBody ExamUploadRequest examUploadRequest) {
         Long examId = examService.uploadExam(examUploadRequest);
-        return new ResponseEntity<>(examId, HttpStatus.CREATED);
+        return ResponseBody.success(examId, "Exam uploaded successfully!");
     }
 }

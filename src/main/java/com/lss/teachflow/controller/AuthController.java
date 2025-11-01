@@ -1,5 +1,6 @@
 package com.lss.teachflow.controller;
 
+import com.lss.teachflow.common.ResponseBody;
 import com.lss.teachflow.dto.JwtResponse;
 import com.lss.teachflow.dto.LoginRequest;
 import com.lss.teachflow.dto.RefreshRequest;
@@ -36,7 +37,7 @@ public class AuthController {
     private UserDetailsService userDetailsService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
+    public ResponseBody<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
@@ -44,7 +45,7 @@ public class AuthController {
         Map<String, String> tokens = jwtUtils.generateTokens(authentication);
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");
-        return ResponseEntity.ok(new JwtResponse(
+        return ResponseBody.success(new JwtResponse(
                 accessToken,
                 refreshToken,
                 userService.getUserIdByUsername(loginRequest.getUsername())
@@ -52,23 +53,19 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseBody<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userService.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error: Username is already taken!");
+            return ResponseBody.error("400", "Error: Username is already taken!");
         }
         if (userService.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error: Email is already in use!");
+            return ResponseBody.error("400", "Error: Email is already in use!");
         }
         userService.registerUser(signUpRequest);
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseBody.success(null, "User registered successfully!");
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshRequest refreshRequest) throws Exception {
+    public ResponseBody<?> refreshToken(@Valid @RequestBody RefreshRequest refreshRequest) throws Exception {
         String refreshToken = refreshRequest.getRefreshToken();
         if (jwtUtils.validateJwtToken(refreshToken)) {
             String username = jwtUtils.getUsernameFromJwtToken(refreshToken);
@@ -77,15 +74,13 @@ public class AuthController {
             Map<String, String> tokens = jwtUtils.generateTokens(authentication);
             String newAccessToken = tokens.get("accessToken");
             String newRefreshToken = tokens.get("refreshToken");
-            return ResponseEntity.ok(new JwtResponse(
+            return ResponseBody.success(new JwtResponse(
                     newAccessToken,
                     newRefreshToken,
                     userService.getUserIdByUsername(username)
             ));
         } else {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error: Invalid refresh token!");
+            return ResponseBody.error("400", "Error: Invalid refresh token!");
         }
     }
 }

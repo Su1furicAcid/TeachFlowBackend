@@ -1,15 +1,14 @@
 package com.lss.teachflow.controller;
 
+import com.lss.teachflow.common.ResponseBody;
 import com.lss.teachflow.dto.StudentRequest;
 import com.lss.teachflow.dto.StudentResponse;
 import com.lss.teachflow.entity.Student;
 import com.lss.teachflow.service.StudentsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,24 +20,24 @@ public class StudentsController {
     private final StudentsService studentsService;
 
     @GetMapping
-    public ResponseEntity<List<StudentResponse>> list(@RequestParam("teacherId") Long teacherId) {
+    public ResponseBody<List<StudentResponse>> list(@RequestParam("teacherId") Long teacherId) {
         List<StudentResponse> data = studentsService.findAllByTeacherId(teacherId).stream()
                 .map(StudentResponse::fromEntity)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(data);
+        return ResponseBody.success(data);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentResponse> get(@PathVariable("id") Long id,
+    public ResponseBody<StudentResponse> get(@PathVariable("id") Long id,
                                                @RequestParam("teacherId") Long teacherId) {
         return studentsService.findByStudentIdAndTeacherId(id, teacherId)
                 .map(StudentResponse::fromEntity)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(ResponseBody::success)
+                .orElse(ResponseBody.error("404", "Student not found"));
     }
 
     @PostMapping
-    public ResponseEntity<StudentResponse> create(@Valid @RequestBody StudentRequest request) {
+    public ResponseBody<StudentResponse> create(@Valid @RequestBody StudentRequest request) {
         Student toSave = Student.builder()
                 .teacherId(request.getTeacherId())
                 .studentName(request.getStudentName())
@@ -47,12 +46,11 @@ public class StudentsController {
                 .build();
         Student saved = studentsService.createStudent(toSave);
         StudentResponse body = StudentResponse.fromEntity(saved);
-        return ResponseEntity.created(URI.create("/api/students/" + saved.getStudentId()))
-                .body(body);
+        return ResponseBody.success(body, "Student created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponse> update(@PathVariable("id") Long id,
+    public ResponseBody<StudentResponse> update(@PathVariable("id") Long id,
                                                   @Valid @RequestBody StudentRequest request) {
         Student toUpdate = Student.builder()
                 .studentId(id)
@@ -63,14 +61,14 @@ public class StudentsController {
                 .build();
         return studentsService.updateStudent(toUpdate)
                 .map(StudentResponse::fromEntity)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(ResponseBody::success)
+                .orElse(ResponseBody.error("404", "Student not found"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id,
+    public ResponseBody<Void> delete(@PathVariable("id") Long id,
                                        @RequestParam("teacherId") Long teacherId) {
         boolean deleted = studentsService.deleteByStudentIdAndTeacherId(id, teacherId);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        return deleted ? ResponseBody.success() : ResponseBody.error("404", "Student not found");
     }
 }
