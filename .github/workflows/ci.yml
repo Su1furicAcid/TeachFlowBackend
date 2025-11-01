@@ -57,7 +57,7 @@ jobs:
           target: "/opt/app/teachflow"
 
       - name: Deploy with Docker Compose
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -65,5 +65,16 @@ jobs:
           script: |
             cd /opt/app/teachflow
             echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
-            docker compose pull
+            
+            echo "--- Checking network connectivity to Docker Hub ---"
+            curl -v https://registry-1.docker.io/v2/
+            
+            echo "--- Attempting to pull images with retries ---"
+            for i in 1 2 3; do
+              docker compose pull && break
+              echo "Pull failed, attempt $i of 3. Retrying in 15 seconds..."
+              sleep 15
+            done
+
+            echo "--- Starting services with Docker Compose ---"
             docker compose up -d --remove-orphans
