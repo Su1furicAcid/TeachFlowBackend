@@ -7,6 +7,8 @@ import com.lss.teachflow.dto.RefreshRequest;
 import com.lss.teachflow.dto.SignupRequest;
 import com.lss.teachflow.security.JwtUtils;
 import com.lss.teachflow.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import java.util.Map;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "用户认证", description = "用户登录、注册和刷新token")
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -37,6 +40,7 @@ public class AuthController {
     private UserDetailsService userDetailsService;
 
     @PostMapping("/signin")
+    @Operation(summary = "用户登录", description = "使用用户名和密码进行认证，成功后返回JWT")
     public ResponseBody<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
@@ -53,6 +57,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "用户注册", description = "注册新用户")
     public ResponseBody<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userService.existsByUsername(signUpRequest.getUsername())) {
             return ResponseBody.error("400", "Error: Username is already taken!");
@@ -65,6 +70,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "刷新Token", description = "使用refresh token获取新的access token和refresh token")
     public ResponseBody<?> refreshToken(@Valid @RequestBody RefreshRequest refreshRequest) throws Exception {
         String refreshToken = refreshRequest.getRefreshToken();
         if (jwtUtils.validateJwtToken(refreshToken)) {
