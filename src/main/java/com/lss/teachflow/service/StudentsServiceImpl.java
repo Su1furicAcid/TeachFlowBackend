@@ -20,12 +20,12 @@ public class StudentsServiceImpl implements StudentsService {
 
     @Override
     public Optional<Student> findByStudentIdAndTeacherId(Long id, Long userId) {
-        return studentRepository.findByStudentIdAfterAndTeacherId(id, userId);
+        return studentRepository.findByStudentIdAndTeacherId(id, userId);
     }
 
     @Override
-    public Student createStudent(Student student) {
-        return studentRepository.save(student);
+    public List<Student> createStudents(List<Student> students) {
+        return studentRepository.saveAll(students);
     }
 
     @Override

@@ -6,9 +6,9 @@ import lombok.Data;
 public class JwtResponse {
     private String accessToken;
     private String refreshToken;
-    private int id;
+    private Long id;
 
-    public JwtResponse(String accessToken, String refreshToken, int id) {
+    public JwtResponse(String accessToken, String refreshToken, Long id) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.id = id;

@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class StudentRequest {
-    @NotNull
-    private Long teacherId;
-
     @NotBlank
     private String studentName;
 

@@ -5,10 +5,13 @@ import com.lss.teachflow.dto.StudentRequest;
 import com.lss.teachflow.dto.StudentResponse;
 import com.lss.teachflow.entity.Student;
 import com.lss.teachflow.service.StudentsService;
+import com.lss.teachflow.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +24,44 @@ import java.util.stream.Collectors;
 public class StudentsController {
 
     private final StudentsService studentsService;
+    private final UserService userService;
 
     @GetMapping
-    @Operation(summary = "获取学生列表", description = "获取指定教师的所有学生列表")
-    public ResponseBody<List<StudentResponse>> list(@RequestParam("teacherId") Long teacherId) {
-        List<StudentResponse> data = studentsService.findAllByTeacherId(teacherId).stream()
+    @Operation(summary = "获取学生列表", description = "获取当前教师的所有学生列表")
+    public ResponseBody<List<StudentResponse>> list() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = userDetails.getUsername();
+        Long userId = userService.getUserIdByUsername(userName);
+        List<Student> students = studentsService.findAllByTeacherId(userId);
+        List<StudentResponse> body = students.stream()
                 .map(StudentResponse::fromEntity)
                 .collect(Collectors.toList());
-        return ResponseBody.success(data);
+        return ResponseBody.success(body);
+    }
+
+    @PostMapping
+    @Operation(summary = "创建学生", description = "创建新学生")
+    public ResponseBody<List<StudentResponse>> create(@Valid @RequestBody List<StudentRequest> requestList) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = userDetails.getUsername();
+        Long userId = userService.getUserIdByUsername(userName);
+
+        List<Student> studentsToSave = requestList.stream()
+                .map(request -> Student.builder()
+                        .teacherId(userId)
+                        .studentName(request.getStudentName())
+                        .grade(request.getGrade())
+                        .clazz(request.getClazz())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<Student> savedStudents = studentsService.createStudents(studentsToSave);
+
+        List<StudentResponse> body = savedStudents.stream()
+                .map(StudentResponse::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseBody.success(body, "Students created successfully");
     }
 
     @GetMapping("/{id}")
@@ -41,27 +74,16 @@ public class StudentsController {
                 .orElse(ResponseBody.error("404", "Student not found"));
     }
 
-    @PostMapping
-    @Operation(summary = "创建学生", description = "创建一个新学生")
-    public ResponseBody<StudentResponse> create(@Valid @RequestBody StudentRequest request) {
-        Student toSave = Student.builder()
-                .teacherId(request.getTeacherId())
-                .studentName(request.getStudentName())
-                .grade(request.getGrade())
-                .clazz(request.getClazz())
-                .build();
-        Student saved = studentsService.createStudent(toSave);
-        StudentResponse body = StudentResponse.fromEntity(saved);
-        return ResponseBody.success(body, "Student created successfully");
-    }
-
     @PutMapping("/{id}")
     @Operation(summary = "更新学生信息", description = "更新指定ID的学生信息")
     public ResponseBody<StudentResponse> update(@PathVariable("id") Long id,
                                                   @Valid @RequestBody StudentRequest request) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = userDetails.getUsername();
+        Long userId = userService.getUserIdByUsername(userName);
         Student toUpdate = Student.builder()
                 .studentId(id)
-                .teacherId(request.getTeacherId())
+                .teacherId(userId)
                 .studentName(request.getStudentName())
                 .grade(request.getGrade())
                 .clazz(request.getClazz())
@@ -74,9 +96,11 @@ public class StudentsController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除学生", description = "删除指定ID的学生")
-    public ResponseBody<Void> delete(@PathVariable("id") Long id,
-                                       @RequestParam("teacherId") Long teacherId) {
-        boolean deleted = studentsService.deleteByStudentIdAndTeacherId(id, teacherId);
+    public ResponseBody<Void> delete(@PathVariable("id") Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = userDetails.getUsername();
+        Long userId = userService.getUserIdByUsername(userName);
+        boolean deleted = studentsService.deleteByStudentIdAndTeacherId(id, userId);
         return deleted ? ResponseBody.success() : ResponseBody.error("404", "Student not found");
     }
 }
