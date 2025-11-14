@@ -5,6 +5,6 @@ import java.math.BigDecimal;
 
 @Data
 public class ScoreUploadRequest {
-    private Long studentId;
+    private String studentNumber;
     private BigDecimal scoreValue;
 }

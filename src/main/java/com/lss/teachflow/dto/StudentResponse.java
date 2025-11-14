@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class StudentResponse {
-    private Long studentId;
+    private Long id;
+    private String studentNumber;
     private Long teacherId;
     private String studentName;
     private String grade;
@@ -19,7 +20,8 @@ public class StudentResponse {
 
     public static StudentResponse fromEntity(Student s) {
         return StudentResponse.builder()
-                .studentId(s.getStudentId())
+                .id(s.getId())
+                .studentNumber(s.getStudentNumber())
                 .teacherId(s.getTeacherId())
                 .studentName(s.getStudentName())
                 .grade(s.getGrade())

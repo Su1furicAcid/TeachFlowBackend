@@ -22,4 +22,10 @@ public class ExamController {
         Long examId = examService.uploadExam(examUploadRequest);
         return ResponseBody.success(examId, "Exam uploaded successfully!");
     }
+
+    @GetMapping
+    @Operation(summary = "获取考试信息", description = "获取所有考试的详细信息")
+    public ResponseBody<?> getAllExams() {
+        return ResponseBody.success(examService.getAllExams(), "Exams retrieved successfully!");
+    }
 }

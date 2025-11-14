@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ScoreRepository extends JpaRepository<Score, Long> {
-    List<Score> findByExamId_ExamId(Long examIdExamId);
-    List<Score> findByStudentId_StudentId(Long studentId);
+    List<Score> findByExam_ExamId(Long examId);
+    List<Score> findByStudent_Id(Long studentId);
+    java.util.Optional<Score> findByExam_ExamIdAndStudent_Id(Long examId, Long studentId);
 }

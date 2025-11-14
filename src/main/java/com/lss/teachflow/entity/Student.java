@@ -13,8 +13,7 @@ import lombok.*;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "student_id")
-    private Long studentId;
+    private Long id;
 
     @Column(nullable = false)
     private Long teacherId;
@@ -27,4 +26,7 @@ public class Student {
 
     @Column(nullable = false)
     private String clazz;
+
+    @Column(name = "student_number", unique = true, nullable = false)
+    private String studentNumber;
 }

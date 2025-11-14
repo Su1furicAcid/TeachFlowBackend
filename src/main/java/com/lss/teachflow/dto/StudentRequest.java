@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class StudentRequest {
     @NotBlank
+    private String studentNumber;
+
+    @NotBlank
     private String studentName;
 
     @NotBlank

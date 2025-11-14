@@ -1,5 +1,6 @@
 package com.lss.teachflow.service;
 
+import com.lss.teachflow.dto.ScoreResponse;
 import com.lss.teachflow.dto.ScoreUploadRequest;
 import com.lss.teachflow.entity.Exam;
 import com.lss.teachflow.entity.Score;
@@ -31,45 +32,36 @@ public class ScoreServiceImpl implements ScoreService {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new RuntimeException("Exam not found with id: " + examId));
 
-        List<Long> studentIds = scoreRequests.stream()
-                .map(ScoreUploadRequest::getStudentId)
+        List<String> studentNumbers = scoreRequests.stream()
+                .map(ScoreUploadRequest::getStudentNumber)
                 .collect(Collectors.toList());
 
-        Map<Long, Student> studentMap = studentRepository.findAllById(studentIds).stream()
-                .collect(Collectors.toMap(Student::getStudentId, Function.identity()));
-
-        Map<Long, Score> existingScoresMap = scoreRepository.findByExamId_ExamId(examId).stream()
-                .collect(Collectors.toMap(score -> score.getStudentId().getStudentId(), Function.identity()));
+        List<Student> students = studentRepository.findByStudentNumberIn(studentNumbers);
+        Map<String, Student> studentMap = students.stream()
+                .collect(Collectors.toMap(Student::getStudentNumber, Function.identity()));
         List<Score> scoresToSave = new ArrayList<>();
-        for (ScoreUploadRequest req : scoreRequests) {
-            Student student = studentMap.get(req.getStudentId());
+        for (ScoreUploadRequest request : scoreRequests) {
+            Student student = studentMap.get(request.getStudentNumber());
             if (student == null) {
-                System.err.println("Student not found with id: " + req.getStudentId());
-                continue;
+                throw new RuntimeException("Student not found with student number: " + request.getStudentNumber());
             }
-            Score score = existingScoresMap.get(req.getStudentId());
-            if (score != null) {
-                score.setScoreValue(req.getScoreValue());
-                scoresToSave.add(score);
-            } else {
-                Score newScore = Score.builder()
-                        .examId(exam)
-                        .studentId(student)
-                        .scoreValue(req.getScoreValue())
-                        .build();
-                scoresToSave.add(newScore);
-            }
+            Score score = scoreRepository.findByExam_ExamIdAndStudent_Id(examId, student.getId())
+                    .orElse(new Score());
+            score.setExam(exam);
+            score.setStudent(student);
+            score.setScoreValue(request.getScoreValue());
+            scoresToSave.add(score);
         }
         scoreRepository.saveAll(scoresToSave);
     }
 
     @Override
-    public List<Score> getScoresByExamId(Long examId) {
-        return scoreRepository.findByExamId_ExamId(examId);
+    public List<ScoreResponse> getScoresByExamId(Long examId) {
+        return scoreRepository.findByExam_ExamId(examId).stream().map(ScoreResponse::fromEntity).collect(Collectors.toList());
     }
 
     @Override
-    public List<Score> getScoresByStudentId(Long studentId) {
-        return scoreRepository.findByStudentId_StudentId(studentId);
+    public List<ScoreResponse> getScoresByStudentId(Long studentId) {
+        return scoreRepository.findByStudent_Id(studentId).stream().map(ScoreResponse::fromEntity).collect(Collectors.toList());
     }
 }

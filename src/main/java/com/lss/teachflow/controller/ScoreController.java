@@ -1,6 +1,7 @@
 package com.lss.teachflow.controller;
 
 import com.lss.teachflow.common.ResponseBody;
+import com.lss.teachflow.dto.ScoreResponse;
 import com.lss.teachflow.dto.ScoreUploadRequest;
 import com.lss.teachflow.entity.Score;
 import com.lss.teachflow.service.ScoreService;
@@ -30,15 +31,15 @@ public class ScoreController {
 
     @GetMapping("/score/exam/{examId}")
     @Operation(summary = "查询考试成绩", description = "根据考试ID查询所有学生成绩")
-    public ResponseBody<List<Score>> getScoresByExam(@PathVariable Long examId) {
-        List<Score> scores = scoreService.getScoresByExamId(examId);
+    public ResponseBody<List<ScoreResponse>> getScoresByExam(@PathVariable Long examId) {
+        List<ScoreResponse> scores = scoreService.getScoresByExamId(examId);
         return ResponseBody.success(scores);
     }
 
     @GetMapping("/score/student/{studentId}")
     @Operation(summary = "查询学生成绩", description = "根据学生ID查询该学生所有考试成绩")
-    public ResponseBody<List<Score>> getScoresByStudent(@PathVariable Long studentId) {
-        List<Score> scores = scoreService.getScoresByStudentId(studentId);
+    public ResponseBody<List<ScoreResponse>> getScoresByStudent(@PathVariable Long studentId) {
+        List<ScoreResponse> scores = scoreService.getScoresByStudentId(studentId);
         return ResponseBody.success(scores);
     }
 }

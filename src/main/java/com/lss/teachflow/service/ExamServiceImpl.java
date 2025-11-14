@@ -25,4 +25,9 @@ public class ExamServiceImpl implements ExamService {
         Exam savedExam = examRepository.save(exam);
         return savedExam.getExamId();
     }
+
+    @Override
+    public java.util.List<Exam> getAllExams() {
+        return examRepository.findAll();
+    }
 }
