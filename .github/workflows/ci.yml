@@ -67,4 +67,4 @@ jobs:
             echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
             
             echo "--- Checking network connectivity to Docker Hub ---"
-            docker compose up -d --remove-orphans
+            docker compose -f compose.yaml up -d --remove-orphans
