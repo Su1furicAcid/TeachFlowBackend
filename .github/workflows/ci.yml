@@ -65,6 +65,9 @@ jobs:
           script: |
             cd /opt/app/teachflow
             echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
+            echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
+            echo "GOOGLE_SEARCH_ENGINE_ID=${{ secrets.GOOGLE_SEARCH_ENGINE_ID }}" >> .env
             
             echo "--- Checking network connectivity to Docker Hub ---"
+            docker compose -f compose.yaml down -v
             docker compose -f compose.yaml up -d --remove-orphans
