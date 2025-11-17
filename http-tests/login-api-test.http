@@ -2,7 +2,7 @@ POST http://localhost:8080/backend/api/auth/signin
 Content-Type: application/json
 
 {
-  "username": "user2",
+  "username": "user4",
   "password": "password123"
 }
 
