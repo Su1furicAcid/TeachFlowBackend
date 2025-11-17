@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/exams")
@@ -16,10 +17,17 @@ public class ExamController {
 
     private final ExamService examService;
 
-    @PostMapping
-    @Operation(summary = "上传考试信息", description = "上传一次考试的详细信息")
-    public ResponseBody<Long> uploadExam(@RequestBody ExamUploadRequest examUploadRequest) {
-        Long examId = examService.uploadExam(examUploadRequest);
+    @PostMapping(consumes = {"multipart/form-data"})
+    @Operation(summary = "上传考试信息", description = "上传一次考试的详细信息，包括试卷文件")
+    public ResponseBody<Long> uploadExam(@RequestParam("examName") String examName,
+                                         @RequestParam("examSubject") String examSubject,
+                                         @RequestParam("examDate") String examDate,
+                                         @RequestPart("file") MultipartFile file) {
+        ExamUploadRequest examUploadRequest = new ExamUploadRequest();
+        examUploadRequest.setExamName(examName);
+        examUploadRequest.setExamSubject(examSubject);
+        examUploadRequest.setExamDate(examDate);
+        Long examId = examService.uploadExam(examUploadRequest, file);
         return ResponseBody.success(examId, "Exam uploaded successfully!");
     }
 

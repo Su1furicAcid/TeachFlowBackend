@@ -25,4 +25,6 @@ public class Exam {
     private String examSubject;
 
     private LocalDate examDate;
+
+    private String filePath;
 }
