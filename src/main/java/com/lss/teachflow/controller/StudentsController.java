@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/students")
+@RequestMapping("/backend/api/students")
 @RequiredArgsConstructor
 @Tag(name = "学生管理", description = "管理学生信息")
 public class StudentsController {

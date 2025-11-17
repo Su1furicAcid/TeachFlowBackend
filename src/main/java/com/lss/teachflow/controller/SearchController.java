@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/search")
+@RequestMapping("/backend/api/search")
 @RequiredArgsConstructor
 @Tag(name = "搜索管理", description = "搜索相关接口")
 public class SearchController {
