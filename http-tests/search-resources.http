@@ -1,0 +1,23 @@
+POST http://localhost:8080/api/search
+Content-Type: application/json
+
+{
+  "query": "AI",
+  "filters": [
+    {
+      "sourceType": "DOCUMENT",
+      "maxResults": 5,
+      "safeSearch": true
+    },
+    {
+      "sourceType": "VIDEO",
+      "maxResults": 3,
+      "safeSearch": true
+    },
+    {
+      "sourceType": "IMAGE",
+      "maxResults": 8,
+      "safeSearch": true
+    }
+  ]
+}
