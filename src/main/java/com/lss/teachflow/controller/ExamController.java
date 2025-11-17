@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/exams")
+@RequestMapping("/exams")
 @RequiredArgsConstructor
 @Tag(name = "考试管理", description = "上传和管理考试信息")
 public class ExamController {

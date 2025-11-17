@@ -24,7 +24,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @Tag(name = "用户认证", description = "用户登录、注册和刷新token")
 public class AuthController {
     @Autowired

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/scores")
+@RequestMapping("/scores")
 @RequiredArgsConstructor
 @Tag(name = "成绩管理", description = "上传和查询学生成绩")
 public class ScoreController {
