@@ -5,6 +5,7 @@ import com.lss.teachflow.dto.SearchFilter;
 import com.lss.teachflow.dto.SearchRequest;
 import com.lss.teachflow.dto.SearchResult;
 import com.lss.teachflow.service.SearchService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ public class SearchController {
     private final SearchService searchService;
 
     @PostMapping
+    @Operation(summary = "综合搜索", description = "根据查询条件进行综合搜索")
     public ResponseBody<?> search(@RequestBody SearchRequest searchRequest) {
         List<SearchFilter> filters = searchRequest.getFilters();
         Map<String, List<?>> results = new HashMap<>();
