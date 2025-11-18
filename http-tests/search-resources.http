@@ -1,5 +1,6 @@
-POST http://localhost:8080/api/search
+POST http://60.205.57.52:8080/backend/api/search
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzYzNDI3NjAxLCJleHAiOjE3NjM0MzEyMDF9.CkWXbFtk5D_o9jp2UJ8k-ZazoVbkUQ-K-ILR1sbejeA
 
 {
   "query": "AI",

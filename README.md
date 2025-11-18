@@ -4,6 +4,8 @@
 
 TeachflowBackend 是 Teachflow 项目的后端服务，一个旨在简化教育工作流程的平台。该服务提供了管理用户、课程和内容的 API，并利用 AI 技术增强功能。
 
+API 文档：[http://60.205.57.52:8080/swagger-ui/index.html#/](http://60.205.57.52:8080/swagger-ui/index.html#/)
+
 ## 功能特性 (Features)
 
 *   基于 JWT 的用户认证与授权

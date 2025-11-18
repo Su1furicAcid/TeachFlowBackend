@@ -1,8 +1,8 @@
-POST http://localhost:8080/backend/api/auth/signup
+POST http://60.205.57.52:8080/backend/api/auth/signup
 Content-Type: application/json
 
 {
-  "username": "user4",
-  "password": "password123",
-  "email": "user4@qq.com"
+  "username": "user3",
+  "password": "123456",
+  "email": "user3@qq.com"
 }
